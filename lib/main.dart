@@ -506,25 +506,27 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   void _clearAllHistory() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('确认清空'),
         content: const Text('确定要清空所有历史对话记录吗？此操作不可恢复。'),
         actions: [
           IOSStyleButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('取消'),
           ),
           IOSStyleButton(
             onPressed: () async {
               try {
+                Navigator.pop(dialogContext);
                 final storageService = StorageService.instance;
                 await storageService.deleteAllChats();
-                setState(() {
-                  _chatMessagesMap.clear();
-                  _chatHistory.clear();
-                  _createNewChat();
-                });
-                Navigator.pop(context);
+                if (mounted) {
+                  setState(() {
+                    _chatMessagesMap.clear();
+                    _chatHistory.clear();
+                    _createNewChat();
+                  });
+                }
               } catch (e) {
                 print('清空存储失败: $e');
               }
@@ -581,34 +583,36 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('确认删除'),
         content: Text('确定要删除对话 "$chatTitle" 吗？此操作不可恢复。'),
         actions: [
           IOSStyleButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('取消'),
           ),
           IOSStyleButton(
             onPressed: () async {
               try {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
 
                 final storageService = StorageService.instance;
                 await storageService.deleteChat(chatTitle);
 
-                setState(() {
-                  _chatMessagesMap.remove(chatTitle);
-                  _chatHistory.removeAt(index);
+                if (mounted) {
+                  setState(() {
+                    _chatMessagesMap.remove(chatTitle);
+                    _chatHistory.removeAt(index);
 
-                  if (_selectedHistoryIndex >= _chatHistory.length) {
-                    _selectedHistoryIndex = _chatHistory.length - 1;
-                  }
+                    if (_selectedHistoryIndex >= _chatHistory.length) {
+                      _selectedHistoryIndex = _chatHistory.length - 1;
+                    }
 
-                  if (_chatHistory.isEmpty) {
-                    _createNewChat();
-                  }
-                });
+                    if (_chatHistory.isEmpty) {
+                      _createNewChat();
+                    }
+                  });
+                }
 
                 if (_isSidebarOpen) {
                   _sidebarAnimationController.reverse().then((_) {
@@ -676,14 +680,14 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               ),
             ),
           if (isMobile && _isSidebarOpen)
-            SlideTransition(
-              position: _sidebarSlideAnimation,
-              child: FadeTransition(
-                opacity: _sidebarFadeAnimation,
-                child: Positioned(
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              child: SlideTransition(
+                position: _sidebarSlideAnimation,
+                child: FadeTransition(
+                  opacity: _sidebarFadeAnimation,
                   child: _buildSidebar(),
                 ),
               ),
