@@ -193,6 +193,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   bool _isTyping = false;
   bool _isSidebarOpen = false;
+  Counselor? _selectedCounselor;
   late AnimationController _sidebarAnimationController;
   late Animation<Offset> _sidebarSlideAnimation;
   late Animation<double> _sidebarFadeAnimation;
@@ -542,6 +543,283 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   }
 
   Future<void> _createNewChat() async {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 768;
+    
+    if (isMobile) {
+      _sidebarAnimationController.reverse();
+    }
+    
+    _selectedCounselor = null;
+    
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogContext) => _buildCounselorSelectionDialog(dialogContext),
+    );
+  }
+
+  Widget _buildCounselorSelectionDialog(BuildContext dialogContext) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 768;
+    
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: isMobile ? screenWidth * 0.9 : 600,
+        height: isMobile ? MediaQuery.of(context).size.height * 0.7 : 500,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  const Text(
+                    '选择咨询师',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Spacer(),
+                  IOSStyleButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: isMobile ? 2 : 3,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: isMobile ? 1.2 : 1.5,
+                  ),
+                  itemCount: counselors.length,
+                  itemBuilder: (context, index) {
+                    final counselor = counselors[index];
+                    final isSelected = _selectedCounselor?.id == counselor.id;
+                    
+                    return IOSStyleButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedCounselor = counselor;
+                        });
+                        _showConfirmationDialog(dialogContext, counselor);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isSelected 
+                              ? const Color(0xFF007AFF).withOpacity(0.1)
+                              : Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isSelected 
+                                ? const Color(0xFF007AFF)
+                                : Colors.grey.shade300,
+                            width: isSelected ? 2 : 1,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: isSelected 
+                                    ? const Color(0xFF007AFF)
+                                    : const Color(0xFF007AFF).withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                counselor.icon,
+                                color: isSelected 
+                                    ? Colors.white
+                                    : const Color(0xFF007AFF),
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              counselor.name,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: isSelected 
+                                    ? const Color(0xFF007AFF)
+                                    : const Color(0xFF1A1A1A),
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              counselor.description,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.grey.shade600,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+                            Flexible(
+                              child: Text(
+                                counselor.specialty,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.grey.shade500,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showConfirmationDialog(BuildContext parentContext, Counselor counselor) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (confirmContext) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF007AFF).withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  counselor.icon,
+                  color: const Color(0xFF007AFF),
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '选择 ${counselor.name}',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                counselor.specialty,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '模型: ${counselor.model}',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade500,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: IOSStyleButton(
+                      onPressed: () {
+                        Navigator.pop(confirmContext);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            '取消',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF1A1A1A),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: IOSStyleButton(
+                      onPressed: () async {
+                        Navigator.pop(confirmContext);
+                        Navigator.pop(parentContext);
+                        await _createChatWithCounselor(counselor);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF007AFF),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            '确认',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _createChatWithCounselor(Counselor counselor) async {
     final chatId = '新对话 ${_chatHistory.length + 1}';
     
     try {
@@ -562,13 +840,14 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         ));
         _chatMessagesMap[chatId] = [
           ChatMessage(
-            content: '你好！我是ChatGLM，有什么可以帮你的？',
+            content: '你好！我是${counselor.name}，${counselor.specialty}。很高兴为你提供帮助！',
             isUser: false,
             timestamp: DateTime.now(),
           ),
         ];
         _selectedHistoryIndex = 0;
         _isTyping = false;
+        _isSidebarOpen = false;
       });
     } catch (e) {
       print('创建新对话失败: $e');
@@ -1442,3 +1721,72 @@ enum AvatarType {
   ai,
   user,
 }
+
+class Counselor {
+  final String id;
+  final String name;
+  final String description;
+  final String specialty;
+  final IconData icon;
+  final String model;
+
+  Counselor({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.specialty,
+    required this.icon,
+    required this.model,
+  });
+}
+
+final List<Counselor> counselors = [
+  Counselor(
+    id: '1',
+    name: 'Paul',
+    description: '通用问题解答',
+    specialty: '擅长精神分析的咨询师',
+    icon: Icons.psychology,
+    model: 'GPT-4',
+  ),
+  Counselor(
+    id: '2',
+    name: 'Claude',
+    description: '深度对话与思考',
+    specialty: '擅长哲学思辨与情感支持',
+    icon: Icons.auto_stories,
+    model: 'Claude',
+  ),
+  Counselor(
+    id: '3',
+    name: 'Emma',
+    description: '职业规划指导',
+    specialty: '专注于个人成长与职业发展',
+    icon: Icons.trending_up,
+    model: 'GPT-3.5',
+  ),
+  Counselor(
+    id: '4',
+    name: 'Sophie',
+    description: '情感关系咨询',
+    specialty: '擅长人际关系与情感问题',
+    icon: Icons.favorite,
+    model: 'Claude',
+  ),
+  Counselor(
+    id: '5',
+    name: 'David',
+    description: '压力管理专家',
+    specialty: '专注焦虑与压力疏导',
+    icon: Icons.spa,
+    model: 'GPT-4',
+  ),
+  Counselor(
+    id: '6',
+    name: 'Luna',
+    description: '创造力启发',
+    specialty: '激发创意与灵感',
+    icon: Icons.lightbulb,
+    model: 'GPT-4',
+  ),
+];
