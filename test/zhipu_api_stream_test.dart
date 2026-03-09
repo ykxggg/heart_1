@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:heart_1/main.dart';
+import 'package:heart_1/services/zhipu_api_service.dart';
 
 void main() {
   group('智谱API流式返回测试', () {
