@@ -37,6 +37,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   final String _apiKey = '80e0fd36f3994cc7b07575132a552436.XfK6MOqMLmIS8OoS';
 
   final List<ChatHistory> _chatHistory = [];
+  final Map<String, String> _chatSystemPrompts = {};
 
   List<ChatMessage> get _messages {
     if (_chatHistory.isEmpty) return [];
@@ -95,12 +96,14 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       
       final chatHistoryList = <ChatHistory>[];
       final chatMessagesMap = <String, List<ChatMessage>>{};
+      final chatSystemPrompts = <String, String>{};
       
       for (final chat in chats) {
         final title = chat['title'] as String;
         final lastMessage = chat['last_message'] as String? ?? '';
         final timestamp = chat['timestamp'] as String? ?? '';
         final avatarTypeStr = chat['avatar_type'] as String? ?? 'AvatarType.ai';
+        final counselorId = chat['counselor_id'] as String?;
         
         final avatarType = avatarTypeStr.contains('user') ? AvatarType.user : AvatarType.ai;
         
@@ -109,9 +112,16 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           lastMessage: lastMessage,
           timestamp: timestamp,
           avatarType: avatarType,
+          counselorId: counselorId,
         );
         
         chatHistoryList.add(chatHistory);
+        
+        if (counselorId != null) {
+          final counselor = counselors.firstWhere((c) => c.id == counselorId, orElse: () => counselors.first);
+          final systemPrompt = await counselor.getSystemPrompt();
+          chatSystemPrompts[title] = systemPrompt;
+        }
         
         final messages = await storageService.getMessages(title);
         final chatMessages = messages.map((msg) {
@@ -130,6 +140,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         _chatHistory.addAll(chatHistoryList);
         _chatMessagesMap.clear();
         _chatMessagesMap.addAll(chatMessagesMap);
+        _chatSystemPrompts.clear();
+        _chatSystemPrompts.addAll(chatSystemPrompts);
         _selectedHistoryIndex = 0;
       });
       
@@ -156,6 +168,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
     final currentTitle = _chatHistory[_selectedHistoryIndex].title;
     final messages = _chatMessagesMap[currentTitle]!;
+    final systemPrompt = _chatSystemPrompts[currentTitle];
 
     setState(() {
       messages.add(ChatMessage(
@@ -181,15 +194,26 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           lastMessage: message,
           timestamp: '刚刚',
           avatarType: history.avatarType,
+          counselorId: history.counselorId,
         );
       });
 
-      final historyMessages = messages
-          .where((msg) => !msg.isUser)
-          .map((msg) => {'role': 'assistant', 'content': msg.content})
-          .toList();
+      final historyMessages = <Map<String, String>>[];
 
-      historyMessages.insert(0, {
+      if (systemPrompt != null) {
+        historyMessages.add({
+          'role': 'system',
+          'content': systemPrompt,
+        });
+      }
+
+      historyMessages.addAll(
+        messages
+            .where((msg) => !msg.isUser)
+            .map((msg) => {'role': 'assistant', 'content': msg.content})
+      );
+
+      historyMessages.add({
         'role': 'user',
         'content': message,
       });
@@ -275,12 +299,15 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     final chatId = '新对话 ${_chatHistory.length + 1}';
     
     try {
+      final systemPrompt = await counselor.getSystemPrompt();
+      
       final storageService = StorageService.instance;
       await storageService.saveChat({
         'title': chatId,
         'last_message': '',
         'timestamp': '刚刚',
         'avatar_type': AvatarType.ai.toString(),
+        'counselor_id': counselor.id,
       });
       
       setState(() {
@@ -289,7 +316,9 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           lastMessage: '',
           timestamp: '刚刚',
           avatarType: AvatarType.ai,
+          counselorId: counselor.id,
         ));
+        _chatSystemPrompts[chatId] = systemPrompt;
         _chatMessagesMap[chatId] = [
           ChatMessage(
             content: '你好！我是${counselor.name}，${counselor.specialty}。很高兴为你提供帮助！',

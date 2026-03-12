@@ -5,11 +5,13 @@ class ChatHistory {
   final String lastMessage;
   final String timestamp;
   final AvatarType avatarType;
+  final String? counselorId;
 
   ChatHistory({
     required this.title,
     required this.lastMessage,
     required this.timestamp,
     required this.avatarType,
+    this.counselorId,
   });
 }
