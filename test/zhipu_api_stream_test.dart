@@ -1,10 +1,24 @@
+import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:heart_1/services/zhipu_api_service.dart';
 
 void main() {
   group('智谱API流式返回测试', () {
     late ZhipuApiService apiService;
-    const testApiKey = '80e0fd36f3994cc7b07575132a552436.XfK6MOqMLmIS8OoS';
+    String testApiKey = '';
+
+    setUpAll(() async {
+      try {
+        final file = File('.key');
+        if (await file.exists()) {
+          testApiKey = await file.readAsString();
+        } else {
+          testApiKey = 'placeholder_key';
+        }
+      } catch (e) {
+        testApiKey = 'placeholder_key';
+      }
+    });
 
     setUp(() {
       apiService = ZhipuApiService(apiKey: testApiKey);

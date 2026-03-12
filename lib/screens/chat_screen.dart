@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform;
 import '../models/chat_message.dart';
@@ -34,7 +35,58 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   final Map<String, List<ChatMessage>> _chatMessagesMap = {};
 
   late final ZhipuApiService _apiService;
-  final String _apiKey = '80e0fd36f3994cc7b07575132a552436.XfK6MOqMLmIS8OoS';
+  late final String _apiKey;
+
+  Future<String> _loadApiKey() async {
+    try {
+      final file = File('.key');
+      if (await file.exists()) {
+        final content = await file.readAsString();
+        if (content.trim().isNotEmpty) {
+          return content.trim();
+        } else {
+          throw Exception('API key file is empty');
+        }
+      } else {
+        throw Exception('API key file not found');
+      }
+    } catch (e) {
+      throw Exception('Failed to load API key: $e');
+    }
+  }
+
+  Future<void> _showErrorDialogAndExit(String message) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('配置错误'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(message),
+            const SizedBox(height: 16),
+            const Text(
+              '请确保在项目根目录创建了 .key 文件，\n'
+              '并在文件中填入了正确的API密钥。\n\n'
+              '应用程序将退出。',
+              style: TextStyle(color: Colors.red),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              exit(1);
+            },
+            child: const Text('退出'),
+          ),
+        ],
+      ),
+    );
+  }
 
   final List<ChatHistory> _chatHistory = [];
   final Map<String, String> _chatSystemPrompts = {};
@@ -45,10 +97,15 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   }
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
-    _apiService = ZhipuApiService(apiKey: _apiKey);
-    _loadHistoryFromDatabase();
+    try {
+      _apiKey = await _loadApiKey();
+      _apiService = ZhipuApiService(apiKey: _apiKey);
+      _loadHistoryFromDatabase();
+    } catch (e) {
+      await _showErrorDialogAndExit(e.toString());
+    }
     
     _sidebarAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
