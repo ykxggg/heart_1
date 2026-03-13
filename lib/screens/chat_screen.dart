@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform;
 import '../models/chat_message.dart';
 import '../models/chat_history.dart';
@@ -39,17 +40,28 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Future<String> _loadApiKey() async {
     try {
+      // 首先尝试从assets加载
+      try {
+        final keyContent = await rootBundle.loadString('assets/.key');
+        print('从assets成功加载API密钥');
+        if (keyContent.trim().isNotEmpty) {
+          return keyContent.trim();
+        }
+      } catch (e) {
+        print('从assets加载API密钥失败: $e');
+      }
+      
+      // 如果assets加载失败，尝试文件系统
       final file = File('.key');
       if (await file.exists()) {
         final content = await file.readAsString();
         if (content.trim().isNotEmpty) {
+          print('从文件系统成功加载API密钥');
           return content.trim();
-        } else {
-          throw Exception('API key file is empty');
         }
-      } else {
-        throw Exception('API key file not found');
       }
+      
+      throw Exception('API key not found in assets or file system');
     } catch (e) {
       throw Exception('Failed to load API key: $e');
     }
@@ -97,16 +109,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   }
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    try {
-      _apiKey = await _loadApiKey();
-      _apiService = ZhipuApiService(apiKey: _apiKey);
-      _loadHistoryFromDatabase();
-    } catch (e) {
-      await _showErrorDialogAndExit(e.toString());
-    }
     
+    // 初始化动画控制器
     _sidebarAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -135,6 +141,19 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       parent: _sidebarAnimationController,
       curve: Curves.easeIn,
     ));
+    
+    // 异步加载API密钥和历史记录
+    _loadApiKeyAndHistory();
+  }
+
+  Future<void> _loadApiKeyAndHistory() async {
+    try {
+      _apiKey = await _loadApiKey();
+      _apiService = ZhipuApiService(apiKey: _apiKey);
+      await _loadHistoryFromDatabase();
+    } catch (e) {
+      await _showErrorDialogAndExit(e.toString());
+    }
   }
 
   Future<void> _loadHistoryFromDatabase() async {
