@@ -284,15 +284,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       }
 
       historyMessages.addAll(
-        messages
-            .where((msg) => !msg.isUser)
-            .map((msg) => {'role': 'assistant', 'content': msg.content})
+        messages.map((msg) => {
+          'role': msg.isUser ? 'user' : 'assistant',
+          'content': msg.content,
+        })
       );
-
-      historyMessages.add({
-        'role': 'user',
-        'content': message,
-      });
 
       final responseBuffer = StringBuffer();
       await for (final chunk in _apiService.streamSendMessage(
