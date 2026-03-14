@@ -350,7 +350,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Future<void> _createNewChat() async {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 768;
+    final isMobile = screenWidth < 1024;
     
     if (isMobile) {
       _sidebarAnimationController.reverse();
@@ -460,7 +460,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     });
     
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 768;
+    final isMobile = screenWidth < 1024;
     if (isMobile) {
       _sidebarAnimationController.reverse();
     }
@@ -540,7 +540,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Widget _buildChatArea() {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 768;
+    final isMobile = screenWidth < 1024;
     
     return Column(
       children: [
@@ -596,7 +596,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Widget _buildAppBar() {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 768;
+    final isMobile = screenWidth < 1024;
     
     return Container(
       height: 56,
@@ -728,7 +728,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Widget _buildSidebar() {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 768;
+    final isMobile = screenWidth < 1024;
     return Container(
       width: isMobile ? screenWidth * 0.75 : screenWidth * 0.33,
       decoration: BoxDecoration(
