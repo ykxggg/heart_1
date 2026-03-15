@@ -518,22 +518,24 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          _buildChatArea(),
-          if (_isSidebarOpen)
-            GestureDetector(
-              onTap: _toggleSidebar,
-              child: FadeTransition(
-                opacity: _overlayFadeAnimation,
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            _buildChatArea(),
+            if (_isSidebarOpen)
+              GestureDetector(
+                onTap: _toggleSidebar,
+                child: FadeTransition(
+                  opacity: _overlayFadeAnimation,
+                  child: Container(
+                    color: Colors.black.withOpacity(0.5),
+                  ),
                 ),
               ),
-            ),
-          if (_isSidebarOpen)
-            _buildSidebar(),
-        ],
+            if (_isSidebarOpen)
+              _buildSidebar(),
+          ],
+        ),
       ),
     );
   }
