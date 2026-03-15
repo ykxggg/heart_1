@@ -642,10 +642,25 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             padding: const EdgeInsets.only(right: 12),
             child: IOSStyleButton(
               onPressed: _createNewChat,
-              child: Icon(
-                Icons.add,
-                color: Colors.grey.shade600,
-                size: 24,
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF007AFF),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF007AFF).withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
             ),
           ),
