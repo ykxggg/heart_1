@@ -549,6 +549,30 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     });
   }
 
+  int _calculateTokens(String text) {
+    int chineseCharCount = 0;
+    int otherCharCount = 0;
+
+    for (int i = 0; i < text.length; i++) {
+      int codeUnit = text.codeUnitAt(i);
+      if (codeUnit >= 0x4E00 && codeUnit <= 0x9FFF) {
+        chineseCharCount++;
+      } else {
+        otherCharCount++;
+      }
+    }
+
+    return (chineseCharCount / 1.5).ceil() + otherCharCount;
+  }
+
+  int _calculateTotalTokens() {
+    int total = 0;
+    for (final message in _messages) {
+      total += _calculateTokens(message.content);
+    }
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -663,14 +687,35 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             const SizedBox(width: 12),
           ],
           Expanded(
-            child: Text(
-              _chatHistory.isNotEmpty
-                  ? _chatHistory[_selectedHistoryIndex].title
-                  : 'ChatGLM',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _chatHistory.isNotEmpty
+                        ? _chatHistory[_selectedHistoryIndex].title
+                        : 'ChatGLM',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                if (_chatHistory.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '${_calculateTotalTokens()} tokens',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           Padding(
