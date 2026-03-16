@@ -42,7 +42,9 @@ class MessageBubble extends StatelessWidget {
             child: Container(
               key: ValueKey('${message.timestamp.toIso8601String()}-${message.content.length}'),
               constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.5,
+                maxWidth: message.isUser
+                    ? MediaQuery.of(context).size.width * 0.5
+                    : double.infinity,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
