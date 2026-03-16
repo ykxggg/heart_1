@@ -13,6 +13,7 @@ import '../widgets/ios_style_button.dart';
 import '../components/message_bubble.dart';
 import '../components/typing_indicator.dart';
 import '../components/counselor_selection_dialog.dart';
+import '../components/settings_dialog.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -503,6 +504,39 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     );
   }
 
+  Future<void> _showSettings() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => const SettingsDialog(),
+    );
+    
+    if (result == true) {
+      await _showKeySavedDialog();
+    }
+  }
+
+  Future<void> _showKeySavedDialog() async {
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green),
+            SizedBox(width: 8),
+            Text('提示'),
+          ],
+        ),
+        content: const Text('API密钥已保存，重启应用后生效。'),
+        actions: [
+          IOSStyleButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('确定'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _toggleSidebar() {
     setState(() {
       _isSidebarOpen = !_isSidebarOpen;
@@ -819,10 +853,13 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Icon(
-                      Icons.settings,
-                      color: Colors.grey.shade600,
-                      size: 20,
+                    IOSStyleButton(
+                      onPressed: _showSettings,
+                      child: Icon(
+                        Icons.settings,
+                        color: Colors.grey.shade600,
+                        size: 20,
+                      ),
                     ),
                   ],
                 ),
