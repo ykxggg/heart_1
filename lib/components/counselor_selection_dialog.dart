@@ -61,99 +61,107 @@ class _CounselorSelectionDialogState extends State<CounselorSelectionDialog> {
             const Divider(height: 1),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: isMobile ? 2 : 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: isMobile ? 1.2 : 1.5,
-                  ),
-                  itemCount: counselors.length,
-                  itemBuilder: (context, index) {
-                    final counselor = counselors[index];
-                    final isSelected = _selectedCounselor?.id == counselor.id;
-                    
-                    return IOSStyleButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedCounselor = counselor;
-                        });
-                        _showConfirmationDialog(context, counselor);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isSelected 
-                              ? const Color(0xFF007AFF).withOpacity(0.1)
-                              : Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
+                padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
+                child: Scrollbar(
+                  thumbVisibility: true,
+                  thickness: 8,
+                  radius: const Radius.circular(4),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: isMobile ? 2 : 3,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: isMobile ? 1.2 : 1.5,
+                      ),
+                    itemCount: counselors.length,
+                    itemBuilder: (context, index) {
+                      final counselor = counselors[index];
+                      final isSelected = _selectedCounselor?.id == counselor.id;
+                      
+                      return IOSStyleButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedCounselor = counselor;
+                          });
+                          _showConfirmationDialog(context, counselor);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
                             color: isSelected 
-                                ? const Color(0xFF007AFF)
-                                : Colors.grey.shade300,
-                            width: isSelected ? 2 : 1,
+                                ? const Color(0xFF007AFF).withOpacity(0.1)
+                                : Colors.grey.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isSelected 
+                                  ? const Color(0xFF007AFF)
+                                  : Colors.grey.shade300,
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color: isSelected 
+                                      ? const Color(0xFF007AFF)
+                                      : const Color(0xFF007AFF).withOpacity(0.1),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  counselor.icon,
+                                  color: isSelected 
+                                      ? Colors.white
+                                      : const Color(0xFF007AFF),
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                counselor.name,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: isSelected 
+                                      ? const Color(0xFF007AFF)
+                                      : const Color(0xFF1A1A1A),
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                counselor.description,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.grey.shade600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Flexible(
+                                child: Text(
+                                  counselor.specialty,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: isSelected 
-                                    ? const Color(0xFF007AFF)
-                                    : const Color(0xFF007AFF).withOpacity(0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                counselor.icon,
-                                color: isSelected 
-                                    ? Colors.white
-                                    : const Color(0xFF007AFF),
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              counselor.name,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: isSelected 
-                                    ? const Color(0xFF007AFF)
-                                    : const Color(0xFF1A1A1A),
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              counselor.description,
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.grey.shade600,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 2),
-                            Flexible(
-                              child: Text(
-                                counselor.specialty,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey.shade500,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
+                  ),
                 ),
               ),
             ),
