@@ -587,7 +587,23 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 child: FadeTransition(
                   opacity: _overlayFadeAnimation,
                   child: Container(
-                    color: Colors.black.withOpacity(0.5),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          Colors.black.withOpacity(0.6),
+                          Colors.black.withOpacity(0.3),
+                        ],
+                      ),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.chevron_left,
+                        color: Colors.white.withOpacity(0.5),
+                        size: 32,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -677,10 +693,15 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               padding: const EdgeInsets.only(left: 12),
               child: IOSStyleButton(
                 onPressed: _toggleSidebar,
-                child: Icon(
-                  Icons.menu,
-                  color: Colors.grey.shade600,
-                  size: 24,
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.menu,
+                    color: Colors.grey.shade600,
+                    size: 24,
+                  ),
                 ),
               ),
             ),
@@ -834,6 +855,48 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       ),
       child: Column(
         children: [
+          Container(
+            height: 56,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.grey.shade200,
+                  width: 1,
+                ),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      '对话历史',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade800,
+                      ),
+                    ),
+                  ),
+                ),
+                IOSStyleButton(
+                  onPressed: _toggleSidebar,
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.grey.shade600,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 8),
