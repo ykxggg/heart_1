@@ -309,6 +309,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               isUser: false,
               timestamp: DateTime.now(),
             ));
+            _isTyping = false;
           });
         }
         
