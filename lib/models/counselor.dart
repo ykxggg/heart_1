@@ -9,6 +9,8 @@ class Counselor {
   final IconData icon;
   final String model;
   final String promptAssetPath;
+  final String bustImagePath;
+  final String headImagePath;
 
   Counselor({
     required this.id,
@@ -18,6 +20,8 @@ class Counselor {
     required this.icon,
     required this.model,
     required this.promptAssetPath,
+    required this.bustImagePath,
+    required this.headImagePath,
   });
 
   Future<String> getSystemPrompt() async {
@@ -34,6 +38,8 @@ final List<Counselor> counselors = [
     icon: Icons.psychology,
     model: 'GPT-4',
     promptAssetPath: 'assets/prompts/zhangwei.md',
+    bustImagePath: 'assets/busts/male_1.png',
+    headImagePath: 'assets/busts/male_1_head.png',
   ),
   Counselor(
     id: '2',
@@ -43,6 +49,8 @@ final List<Counselor> counselors = [
     icon: Icons.auto_stories,
     model: 'Claude',
     promptAssetPath: 'assets/prompts/xiaoya.md',
+    bustImagePath: 'assets/busts/female_1.png',
+    headImagePath: 'assets/busts/female_1_head.png',
   ),
   Counselor(
     id: '3',
@@ -52,6 +60,8 @@ final List<Counselor> counselors = [
     icon: Icons.trending_up,
     model: 'GPT-3.5',
     promptAssetPath: 'assets/prompts/siyuan.md',
+    bustImagePath: 'assets/busts/male_2_7.png',
+    headImagePath: 'assets/busts/male_2_7_head.png',
   ),
   Counselor(
     id: '4',
@@ -61,6 +71,8 @@ final List<Counselor> counselors = [
     icon: Icons.favorite,
     model: 'Claude',
     promptAssetPath: 'assets/prompts/yuting.md',
+    bustImagePath: 'assets/busts/female_2.png',
+    headImagePath: 'assets/busts/female_2_head.png',
   ),
   Counselor(
     id: '5',
@@ -70,6 +82,8 @@ final List<Counselor> counselors = [
     icon: Icons.spa,
     model: 'GPT-4',
     promptAssetPath: 'assets/prompts/liqiang.md',
+    bustImagePath: 'assets/busts/male_2_8.png',
+    headImagePath: 'assets/busts/male_2_8_head.png',
   ),
   Counselor(
     id: '6',
@@ -79,6 +93,8 @@ final List<Counselor> counselors = [
     icon: Icons.lightbulb,
     model: 'GPT-4',
     promptAssetPath: 'assets/prompts/linger.md',
+    bustImagePath: 'assets/busts/female_3.png',
+    headImagePath: 'assets/busts/female_3_head.png',
   ),
   Counselor(
     id: '7',
@@ -88,6 +104,8 @@ final List<Counselor> counselors = [
     icon: Icons.memory,
     model: 'GPT-4',
     promptAssetPath: 'assets/prompts/huimin.md',
+    bustImagePath: 'assets/busts/female_4.png',
+    headImagePath: 'assets/busts/female_4_head.png',
   ),
   Counselor(
     id: '8',
@@ -97,6 +115,8 @@ final List<Counselor> counselors = [
     icon: Icons.accessibility_new,
     model: 'Claude',
     promptAssetPath: 'assets/prompts/xinyi.md',
+    bustImagePath: 'assets/busts/female_5.png',
+    headImagePath: 'assets/busts/female_5_head.png',
   ),
   Counselor(
     id: '9',
@@ -106,6 +126,8 @@ final List<Counselor> counselors = [
     icon: Icons.psychology_alt,
     model: 'GPT-4',
     promptAssetPath: 'assets/prompts/mengqi.md',
+    bustImagePath: 'assets/busts/female_6.png',
+    headImagePath: 'assets/busts/female_6_head.png',
   ),
   Counselor(
     id: '10',
@@ -115,6 +137,8 @@ final List<Counselor> counselors = [
     icon: Icons.stars,
     model: 'Claude',
     promptAssetPath: 'assets/prompts/ruoxue.md',
+    bustImagePath: 'assets/busts/female_7.png',
+    headImagePath: 'assets/busts/female_7_head.png',
   ),
   Counselor(
     id: '11',
@@ -124,6 +148,8 @@ final List<Counselor> counselors = [
     icon: Icons.family_restroom,
     model: 'GPT-4',
     promptAssetPath: 'assets/prompts/yulan.md',
+    bustImagePath: 'assets/busts/female_8.png',
+    headImagePath: 'assets/busts/female_8_head.png',
   ),
   Counselor(
     id: '12',
@@ -133,6 +159,8 @@ final List<Counselor> counselors = [
     icon: Icons.explore,
     model: 'Claude',
     promptAssetPath: 'assets/prompts/yalin.md',
+    bustImagePath: 'assets/busts/female_2_1.png',
+    headImagePath: 'assets/busts/female_2_1_head.png',
   ),
   Counselor(
     id: '13',
@@ -142,5 +170,7 @@ final List<Counselor> counselors = [
     icon: Icons.blur_on,
     model: 'GPT-4',
     promptAssetPath: 'assets/prompts/shihan.md',
+    bustImagePath: 'assets/busts/female_2_2.png',
+    headImagePath: 'assets/busts/female_2_2_head.png',
   ),
 ];

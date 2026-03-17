@@ -633,7 +633,14 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                         itemCount: _messages.length + (_isTyping ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index < _messages.length) {
-                            return MessageBubble(message: _messages[index]);
+                            final counselorId = _chatHistory[_selectedHistoryIndex].counselorId;
+                            final counselor = counselorId != null 
+                                ? counselors.firstWhere((c) => c.id == counselorId, orElse: () => counselors.first)
+                                : null;
+                            return MessageBubble(
+                              message: _messages[index],
+                              headImagePath: counselor?.headImagePath,
+                            );
                           }
                           return const TypingIndicator();
                         },
@@ -654,7 +661,14 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                               itemCount: _messages.length + (_isTyping ? 1 : 0),
                               itemBuilder: (context, index) {
                                 if (index < _messages.length) {
-                                  return MessageBubble(message: _messages[index]);
+                                  final counselorId = _chatHistory[_selectedHistoryIndex].counselorId;
+                                  final counselor = counselorId != null 
+                                      ? counselors.firstWhere((c) => c.id == counselorId, orElse: () => counselors.first)
+                                      : null;
+                                  return MessageBubble(
+                                    message: _messages[index],
+                                    headImagePath: counselor?.headImagePath,
+                                  );
                                 }
                                 return const TypingIndicator();
                               },

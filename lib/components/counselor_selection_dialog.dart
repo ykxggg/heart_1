@@ -100,48 +100,47 @@ class _CounselorSelectionDialogState extends State<CounselorSelectionDialog> {
                           decoration: BoxDecoration(
                             color: isSelected 
                                 ? const Color(0xFF007AFF).withOpacity(0.1)
-                                : Colors.grey.shade50,
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: isSelected 
                                   ? const Color(0xFF007AFF)
-                                  : Colors.grey.shade300,
+                                  : Colors.grey.shade200,
                               width: isSelected ? 2 : 1,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.03),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  color: isSelected 
-                                      ? const Color(0xFF007AFF)
-                                      : const Color(0xFF007AFF).withOpacity(0.1),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  counselor.icon,
-                                  color: isSelected 
-                                      ? Colors.white
-                                      : const Color(0xFF007AFF),
-                                  size: 24,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.asset(
+                                  counselor.bustImagePath,
+                                  width: isMobile ? 80 : 90,
+                                  height: isMobile ? 90 : 100,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 counselor.name,
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.w600,
                                   color: isSelected 
                                       ? const Color(0xFF007AFF)
                                       : const Color(0xFF1A1A1A),
                                 ),
                               ),
-                              const SizedBox(height: 2),
+                              const SizedBox(height: 4),
                               Text(
                                 counselor.description,
                                 style: TextStyle(
@@ -152,7 +151,8 @@ class _CounselorSelectionDialogState extends State<CounselorSelectionDialog> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 2),
-                              Flexible(
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 4),
                                 child: Text(
                                   counselor.specialty,
                                   style: TextStyle(
@@ -194,17 +194,12 @@ class _CounselorSelectionDialogState extends State<CounselorSelectionDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF007AFF).withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  counselor.icon,
-                  color: const Color(0xFF007AFF),
-                  size: 32,
+              ClipOval(
+                child: Image.asset(
+                  counselor.headImagePath,
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
                 ),
               ),
               const SizedBox(height: 16),

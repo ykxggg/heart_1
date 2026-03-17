@@ -3,10 +3,12 @@ import '../models/chat_message.dart';
 
 class MessageBubble extends StatelessWidget {
   final ChatMessage message;
+  final String? headImagePath;
 
   const MessageBubble({
     super.key,
     required this.message,
+    this.headImagePath,
   });
 
   int _calculateTokens(String text) {
@@ -42,24 +44,34 @@ class MessageBubble extends StatelessWidget {
                 message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: [
               if (!message.isUser) ...[
-                Container(
-                  width: 32,
-                  height: 32,
-                  margin: const EdgeInsets.only(right: 8, top: 4),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF007AFF), Color(0xFF5856D6)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                if (headImagePath != null)
+                  ClipOval(
+                    child: Image.asset(
+                      headImagePath!,
+                      width: 36,
+                      height: 36,
+                      fit: BoxFit.cover,
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                  )
+                else
+                  Container(
+                    width: 32,
+                    height: 32,
+                    margin: const EdgeInsets.only(right: 8, top: 4),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF007AFF), Color(0xFF5856D6)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Icon(
+                      Icons.smart_toy,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.smart_toy,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                ),
               ],
               Flexible(
                 child: Container(
