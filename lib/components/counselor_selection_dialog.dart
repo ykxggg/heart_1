@@ -82,7 +82,7 @@ class _CounselorSelectionDialogState extends State<CounselorSelectionDialog> {
                         crossAxisCount: isMobile ? 2 : 3,
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
-                        childAspectRatio: isMobile ? 1.2 : 1.5,
+                        childAspectRatio: 0.75,
                       ),
                     itemCount: counselors.length,
                     itemBuilder: (context, index) {
@@ -117,46 +117,58 @@ class _CounselorSelectionDialogState extends State<CounselorSelectionDialog> {
                             ],
                           ),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.asset(
-                                  counselor.bustImagePath,
-                                  width: isMobile ? 80 : 90,
-                                  height: isMobile ? 90 : 100,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                counselor.name,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: isSelected 
-                                      ? const Color(0xFF007AFF)
-                                      : const Color(0xFF1A1A1A),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.asset(
+                                      counselor.bustImagePath,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              Text(
-                                counselor.description,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.grey.shade600,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 6),
+                                child: Text(
+                                  counselor.name,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: isSelected 
+                                        ? const Color(0xFF007AFF)
+                                        : const Color(0xFF1A1A1A),
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 2),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 4),
+                                padding: const EdgeInsets.symmetric(horizontal: 6),
+                                child: Text(
+                                  counselor.description,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
                                 child: Text(
                                   counselor.specialty,
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize: 9,
                                     color: Colors.grey.shade500,
                                   ),
                                   maxLines: 2,
