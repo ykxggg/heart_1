@@ -16,6 +16,13 @@ class CounselorSelectionDialog extends StatefulWidget {
 
 class _CounselorSelectionDialogState extends State<CounselorSelectionDialog> {
   Counselor? _selectedCounselor;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +73,11 @@ class _CounselorSelectionDialogState extends State<CounselorSelectionDialog> {
                   thumbVisibility: true,
                   thickness: 8,
                   radius: const Radius.circular(4),
+                  controller: _scrollController,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: GridView.builder(
+                      controller: _scrollController,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: isMobile ? 2 : 3,
                         crossAxisSpacing: 12,
