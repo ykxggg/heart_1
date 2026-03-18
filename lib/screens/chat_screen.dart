@@ -440,10 +440,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                   if (_selectedHistoryIndex >= _chatHistory.length) {
                     _selectedHistoryIndex = _chatHistory.length - 1;
                   }
-                  
-                  if (_chatHistory.isEmpty) {
-                    _createNewChat();
-                  }
                 });
               } catch (e) {
                 print('删除对话失败: $e');
